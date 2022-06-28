@@ -1,21 +1,9 @@
 module Acha
   module AchaController
-    # TODO might want to add model.fromJson calls directly to API
-    BASE_CONTROLLER_FILE = "base_controller.dart"
     ACTIONS = %i[index show create update destroy]
 
-    # Generates controller, creates ParentController if necessary and
-    # appends routes to parent controller.
-    def generate_controller(model, attrs)
-      create_parent_controller unless parent_controller_present?
-      append_route(create_route(model))
-      attrs = parse_data attrs # TODO extend, include, or prepend CoreUtils?
-      create_child_controller model, attrs
-    end
-
-    # The parent controller holds routes, headers and other constants, it
-    # is the super class for all other controllers.
-    def create_parent_controller
+    # Writes the superclass for all controllers
+    def self.create_base_controller(file)
       c = %Q(
           //The parent controller holds routes, headers and other constants, it
           //is the super class for all other controllers.
@@ -31,25 +19,10 @@ module Acha
             };
           }
       )
-      write_file "parent_controller.dart", c
+      write_file file, c
     end
 
-    def create_route(model)
-      m = model.downcase
-      r = "var #{m}Path = api + \"#{m}\";\n\t"
-    end
-
-    def append_route(route)
-      # TODO open parent and add route
-    end
-
-
-    def parent_controller_present?
-
-    end
-
-    def create_child_controller(model, attrs)
-      # TODO find parent file inside dir and import
+    def self.create_child_controller(model, attrs, file)
       d = %Q(
           import 'dart:conver';
           import 'package:http/http.dart' as http;
@@ -58,7 +31,7 @@ module Acha
             #{ACTIONS.each do |action| eval "create_#{action}(#{model.downcase})"}
           }
       )
-      write_file "#{model}_model.dart", d
+      write_file file, d
     end
 
     def create_index(m)

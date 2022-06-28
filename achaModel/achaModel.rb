@@ -27,14 +27,12 @@ module Acha
       json
     end
 
-    def generate_model_file(model, attrs)
-      # Ex. attrs = FlutterGen User string:name int:id
-      file_name = "#{model}.dart"
+    def self.write_model_file(file, model, attrs)
       obj = generate_class(model, attrs)
 
       json_methods = "#{from_json_method(model, attrs)}\n#{to_json_method(attrs)}"
       obj.gsub!("{{*}}", json_methods)
-      File.write(file_name, obj)
+      File.write(file, obj)
     end
 
   end

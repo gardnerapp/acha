@@ -1,5 +1,6 @@
 module Acha
-  module CoreUtils # Helperish functions used through all modules
+  # Helperish functions used through all modules
+  module CoreUtils
 
     # parses String:foo int:bar into %w[[String foo] [int bar]]
     def self.parse_data(attrs)
@@ -16,7 +17,7 @@ module Acha
 
     def create_fields(attrs)
       fields = ""
-      attrs.each {|arg| fields.concat "final #{arg[0]} #{{arg[1]}};\n"}
+      attrs.each {|arg| fields.concat "final #{arg[0]} #{arg[1]};\n"}
       fields
     end
 
@@ -27,7 +28,7 @@ module Acha
     end
 
 
-    def generate_class(name, attribtues)
+    def self.generate_class(name, attribtues)
       initializedData = initalizeClassData(name, attributes)
       %Q(
         class #{name}{
@@ -40,7 +41,6 @@ module Acha
     def write_file(name, data)
       File.write(name, data)
     end
-
 
   end
 end
