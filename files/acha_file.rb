@@ -1,43 +1,49 @@
+#load "achaController/achaController.rb"
+load "achaModel/achaModel.rb"
+#load "achaView/achaView.rb"
+
 module Acha
   # sets up relevant directories and files if necessary
-  class FileGenerator
+  module AchaFile
+    include Acha::AchaModel
+
+
     DIRECTORIES = %i[models controllers views]
     BASE_CONTROLLER_FILE = "base_controller.dart"
 
-    def initalize(path, model, attrs)
-      path += "/" unless path[-1] == "/"
-      @path = path
-      @model = model
-      @attrs = attrs
-    end
-
-    # create methods for generating model,controller and view directories
+  # methods for generating model,controller and view directories
     DIRECTORIES.each do |dir|
-      define_singleton_method "generate_#{dir}_dir" do
+      define_method "generate_#{dir}_dir" do
         directory = @path + "#{dir}"
         puts "Generating #{dir} Directory:\t #{directory}\n"
         system "mkdir #{directory}"
       end
     end
 
-    def self.generate_directories
+    def generate_directories
       puts "Invoking Directory Generators...\n"
       DIRECTORIES.each {|dir| self.send "generate_#{dir}_dir"}
     end
 
+    def generate_files
+      generate_model_file
+      generate_controller_files
+      generate_view_files
+    end
+
+    # generate model file
     def generate_model_file
-      # generate model file
       name = "#{@model.downcase}_model.dart"
-      file = @path + name
+      file = @path + "models/" + name
       puts "Creating #{file}\n"
       system "touch #{file}"
       #write to model file
       puts "Writing model to #{file}\n"
-      Acha::AchaModel.write_model_file(file, @model, @attrs)
+      write_model_file(file)
     end
 
-    def self.generate_controller_files
-      base = @path + BASE_CONTROLLER_FILE
+    def generate_controller_files
+      base = @path + "controllers/" + BASE_CONTROLLER_FILE
 
       # Generate base controller file if it does not exist
       if !File.file?(base)
@@ -55,10 +61,11 @@ module Acha
       Acha::AchaController.create_child_controller @model, @attrs, controller_file
     end
 
-    def self.generate_view_files
-
+    def generate_view_files
+      files = %s[index show partial]
+      path = @path + "views/"
+      files.each {|f| system("touch #{path}#{f}_#{@model}")}
     end
-
 
   end
 end

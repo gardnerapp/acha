@@ -1,8 +1,11 @@
 require "optparse"
-load "core_utils/core_utils.rb"
-load "files/file_generator.rb"
 
-# todo handle missed args, add path option
+load "core_utils/core_utils.rb"
+load "files/acha_file.rb"
+load "base.rb"
+
+# todo handle missing args
+
 options = {}
 repo_url = "https://github.com/foo"
 
@@ -44,9 +47,8 @@ opts = OptionParser.new do |opts|
   opts.on('-h', '--help', 'Display this screen') {puts opts; exit!}
 
   opts.on_tail "\n\t\t\t\tExample:"
-  opts.on_tail "\t\t\t\truby #{__FILE__} -m User -d String:name,String:email,int:id\n\n -p absolute_path_of_projects_lib_directory"
+  opts.on_tail "\t\t\t\truby #{__FILE__} -m User -a String:name,String:email,int:id\n\n -p absolute_path_of_projects_lib_directory"
 end
-
 
 opts.order!
 if options.empty?
@@ -54,14 +56,6 @@ if options.empty?
   exit!
 end
 
-puts "Your options are:"
-p options
-puts "\n\n"
-
-# unpack -> map = {:foo => :bar}.each_pair {|k,v| eval("#{k} = #{v}")}
-
-
-# Generate necessary directories
-acha = Acha::FileGenerator.new(options[:path], options[:model], options[:attrs])
+acha = Acha::Acha.new(options[:model], options[:attrs], options[:path])
 
 acha.generate
