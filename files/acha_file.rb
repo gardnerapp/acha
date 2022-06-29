@@ -1,4 +1,4 @@
-#load "achaController/achaController.rb"
+load "achaController/achaController.rb"
 load "achaModel/achaModel.rb"
 #load "achaView/achaView.rb"
 
@@ -6,6 +6,7 @@ module Acha
   # sets up relevant directories and files if necessary
   module AchaFile
     include Acha::AchaModel
+    include Acha::AchaController
 
 
     DIRECTORIES = %i[models controllers views]
@@ -50,7 +51,7 @@ module Acha
         puts "Creating base_controller.dart...\n"
         system("touch #{base}")
         puts "Writing BaseController.....\n "
-        Acha::AchaController.create_base_controller base
+        create_base_controller base
       end
 
       # Generate a controller file
@@ -58,7 +59,7 @@ module Acha
       puts "Creating child controller file...\n"
       system "touch #{controller_file}"
       puts "Writing to child controller file....\n"
-      Acha::AchaController.create_child_controller @model, @attrs, controller_file
+      create_child_controller controller_file
     end
 
     def generate_view_files

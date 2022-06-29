@@ -3,7 +3,7 @@ module Acha
     ACTIONS = %i[index show create update destroy]
 
     # Writes the superclass for all controllers
-    def self.create_base_controller(file)
+    def create_base_controller(file)
       c = %Q(
           //The parent controller holds routes, headers and other constants, it
           //is the super class for all other controllers.
@@ -19,35 +19,38 @@ module Acha
             };
           }
       )
-      write_file file, c
+      File.write file, c
     end
 
-    def self.create_child_controller(model, attrs, file)
+    def create_child_controller(file)
       d = %Q(
           import 'dart:conver';
           import 'package:http/http.dart' as http;
           // TODO import ParentController
-          class #{model}Controller extends ParentController{
-            #{ACTIONS.each do |action| eval "create_#{action}(#{model.downcase})"}
+          class #{@model}Controller extends ParentController{
+            #{ACTIONS.each do |action|
+              eval "create_#{action}(#{@model})"
+            end
+            }
           }
       )
-      write_file file, d
+      File.write(file, d)
     end
 
-    def create_index(m)
+    def create_index
       %Q(
-      Future<List<dynamic>> #{m}Index() async {
-        final response = await http.get(super.#{m}Path, headers: super.headers);
+      Future<List<dynamic>> #{@model}Index() async {
+        final response = await http.get(super.#{@model}Path, headers: super.headers);
 
         #{response_decode}
       }\n
       )
     end
 
-    def create_show(m)
+    def create_show
       %Q(
-      Future<Map<String,dynamic>> #{m}Show(int id) async {
-        var path = super.#{m}Path + "${id}";
+      Future<Map<String,dynamic>> #{@model}Show(int id) async {
+        var path = super.#{@model}Path + "${id}";
         final response = await http.get(path, headers: super.headers);
 
         #{response_decode}
@@ -55,30 +58,30 @@ module Acha
       )
     end
 
-    def create_create(m) # TODO might need to fix
+    def create_create
       %Q(
-        Future<Map<String,dynamic>> #{m}Create(Map<String,dyanmic> data) async{
-          final response = await http.post(super.#{m}Path, body: data, headers: super.headers);
+        Future<Map<String,dynamic>> #{@model}Create(Map<String,dyanmic> data) async{
+          final response = await http.post(super.#{@model}Path, body: data, headers: super.headers);
 
           #{response_decode}
        }\n
       )
     end
 
-    def create_update(m) #TODO find correct HTTP verb
+    def create_update
       %Q(
-        Future<Map<String,dynamic>> #{m}Update(Map<String,dyanmic> data) async{
-          final response = await http.patch(super.#{m}Path, body: data, headers: super.headers);
+        Future<Map<String,dynamic>> #{@model}Update(Map<String,dyanmic> data) async{
+          final response = await http.patch(super.#{@model}Path, body: data, headers: super.headers);
 
           #{response_decode}
        }\n
       )
     end
 
-    def create_destroy(m)
+    def create_destroy
       %Q(
-        Future<Map<String,dynamic>> #{m}destroy(int id) async{
-        var path = super.#{m}Path + "${id}";
+        Future<Map<String,dynamic>> #{@model}destroy(int id) async{
+        var path = super.#{@model}Path + "${id}";
         final response = await http.delete(path, headers: super.headers);
 
         #{response_decode}
