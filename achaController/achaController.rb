@@ -29,7 +29,7 @@ module Acha
           // TODO import ParentController
           class #{@model}Controller extends ParentController{
             #{ACTIONS.each do |action|
-              eval "create_#{action}(#{@model})"
+              eval "create_#{action}"
             end
             }
           }

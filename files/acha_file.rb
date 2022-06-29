@@ -63,10 +63,11 @@ module Acha
     end
 
     def generate_view_files
-      files = %s[index show partial]
+      views = %i[index show partial]
       path = @path + "views/"
-      files.each {|f| system("touch #{path}#{f}_#{@model}")}
-    end
-
+      views.each do |view|
+        system "touch #{path}#{view}_#{@model}"
+      end
+    end 
   end
 end
