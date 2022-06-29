@@ -1,39 +1,32 @@
 *~*~*~*~*~*~*~**~* Welcome to Acha *~*~*~*~*~*~*~*~**~*~*
 *~*~ A Ruby library for Metaprogramming Flutter Apps *~*~
 
-Acha is inspired by Ruby On Rails and shares the command syntax of Rails generators.\
-For example you can do this:
+Acha is inspired by Ruby On Rails Scaffolding. It's basically scaffolding
+for Flutter projects where you pass in your models name and its attributes. This
+tool saves you time by creating the MVC directories for you as well as the
+respective files. Acha will also generate the widgets and http request for your model,
+that way you can focus on building an awesome UI.
 
-  acha g scaffold Item String:name String:price int:id List<String>:tags
+Although the files generated follow my personal conventions for Dart MVC Acha is
+open sourced, free to use so customize to your hearts desire !
 
-  output:
+Example:
+  ruby acha.rb -m User -d name:String,email:String,id:int -p /path/to/my/flutterprojects/lib
 
-  Invoking Acha::ModelGen .......
+  Running this command will generate:
+    lib/models:
+      user_model.dart
+    lib/controllers:
+      base_controller.dart
+      user_controller.dart
+    lib/views:
+      index_user.dart
+      show_user.dart
+      partial_user.dart
 
-  Created "my_flutter_project/lib/models/item.dart"
-
-  Invoking Acha::ControllerGen ......
-
-  Checking if "my_flutter_project/lib/controllers/base_controller.dart" exist
-  creating "my_flutter_project/lib/controllers/base_controller.dart"
-  creating "my_flutter_project/lib/controllers/item_controller.dart"
-
-  Invoking Acha::ViewGen .........
-
-  Created "my_flutter_project/lib/views/item_index.dart"
-  Created "my_flutter_project/lib/views/item_partial.dart"
-  Created "my_flutter_project/lib/views/item_page.dart"
-
-  Please add the following line to the BaseController
-  ~>  var itemsPath = api + "items"   <~
-
-You can also use:
-      acha g model MODEL_NAME DATA_TYPE:VARIABLE
-      acha g controller MODEL_NAME DATA_TYPE:VARIABLE
-      acha g view MODEL_NAME DATA_TYPE:VARIABLE
-
-Acha, like Rails generators, does a lot of the heavy lifting for us. The widgets,
-files and objects it generates are not perfect but serve as a solid stepping stone
-for application development. Feel free to fork, customize or even contribute to Acha !
-
-TODO create controller actions and views for creating, updating and destroying models
+TODO:
+  - Add FutureBuilders to index_model widget
+  - Add routing from index_model to show_model
+  - Add create, update and destroy views
+  - Make model names lowercase in files 
+  - Package as gem, Write Test ???
